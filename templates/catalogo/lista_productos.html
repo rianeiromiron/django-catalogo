@@ -1,12 +1,22 @@
 {% extends "blog_estatico/base.html" %}
+{% load static %}
 
 {% block title %}Catálogo de Productos{% endblock %}
 
-{% block content %}
-    <h2>Catálogo de Productos</h2>
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'catalogo/css/style.css' %}">
+{% endblock %}
 
-    <form method="get">
-        <input type="text" name="q" placeholder="Buscar por nombre o descripción" value="{{ query }}">
+{% block content %}
+<div class="catalogo-page">
+
+    <div class="catalogo-hero">
+        <h2>🛍️ Catálogo de Productos</h2>
+        <p>Explorá, buscá y filtrá todo lo que tenemos disponible</p>
+    </div>
+
+    <form method="get" class="catalogo-filtros">
+        <input type="text" name="q" placeholder="🔍 Buscar por nombre o descripción" value="{{ query }}">
         <select name="categoria">
             <option value="">Todas las categorías</option>
             {% for valor, etiqueta in categorias %}
@@ -16,40 +26,34 @@
         <button type="submit">Filtrar</button>
     </form>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Categoría</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for producto in productos %}
-            <tr>
-                <td>{{ producto.nombre }}</td>
-                <td>{{ producto.descripcion }}</td>
-                <td>${{ producto.precio }}</td>
-                <td>{{ producto.get_categoria_display }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">No hay productos que coincidan con la búsqueda.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% if productos %}
+    <div class="catalogo-grid">
+        {% for producto in productos %}
+        <div class="catalogo-card" data-categoria="{{ producto.categoria }}">
+            <span class="badge" data-categoria="{{ producto.categoria }}">{{ producto.get_categoria_display }}</span>
+            <h3>{{ producto.nombre }}</h3>
+            <p class="descripcion">{{ producto.descripcion }}</p>
+            <span class="precio">${{ producto.precio }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="catalogo-vacio">
+        😕 No hay productos que coincidan con la búsqueda.
+    </div>
+    {% endif %}
 
-    <nav>
+    <nav class="catalogo-paginacion">
         {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_seleccionada %}&categoria={{ categoria_seleccionada }}{% endif %}">Anterior</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_seleccionada %}&categoria={{ categoria_seleccionada }}{% endif %}">← Anterior</a>
         {% endif %}
 
         <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
 
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_seleccionada %}&categoria={{ categoria_seleccionada }}{% endif %}">Siguiente</a>
+            <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_seleccionada %}&categoria={{ categoria_seleccionada }}{% endif %}">Siguiente →</a>
         {% endif %}
     </nav>
+
+</div>
 {% endblock %}

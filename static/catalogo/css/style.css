@@ -1,0 +1,188 @@
+.catalogo-page {
+    --morado: #7c3aed;
+    --rosa: #ec4899;
+    --azul: #0ea5e9;
+    --verde: #10b981;
+    --texto: #1e1b2e;
+    --texto-suave: #6b7280;
+    --fondo-tarjeta: #ffffff;
+    --borde: #e5e7eb;
+
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--texto);
+}
+
+.catalogo-hero {
+    background: linear-gradient(135deg, var(--morado) 0%, var(--rosa) 55%, var(--azul) 100%);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 12px 30px -10px rgba(124, 58, 237, 0.45);
+}
+
+.catalogo-hero h2 {
+    margin: 0;
+    font-size: 2.4rem;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.catalogo-hero p {
+    margin: 0.5rem 0 0;
+    opacity: 0.92;
+    font-size: 1.05rem;
+}
+
+.catalogo-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    background: var(--fondo-tarjeta);
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    padding: 0.6rem 0.9rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 14px -8px rgba(0, 0, 0, 0.15);
+}
+
+.catalogo-filtros input[type="text"],
+.catalogo-filtros select {
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.catalogo-filtros input[type="text"] {
+    flex: 1 1 240px;
+}
+
+.catalogo-filtros input[type="text"]:focus,
+.catalogo-filtros select:focus {
+    border-color: var(--morado);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.catalogo-filtros button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, var(--morado), var(--rosa));
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.catalogo-filtros button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px -6px rgba(124, 58, 237, 0.6);
+}
+
+.catalogo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.catalogo-card {
+    background: var(--fondo-tarjeta);
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    box-shadow: 0 6px 18px -12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-top: 5px solid var(--morado);
+}
+
+.catalogo-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 30px -14px rgba(0, 0, 0, 0.3);
+}
+
+.catalogo-card[data-categoria="electronica"] { border-top-color: var(--azul); }
+.catalogo-card[data-categoria="ropa"] { border-top-color: var(--rosa); }
+.catalogo-card[data-categoria="hogar"] { border-top-color: var(--verde); }
+
+.catalogo-card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.catalogo-card p.descripcion {
+    margin: 0;
+    color: var(--texto-suave);
+    font-size: 0.92rem;
+    flex-grow: 1;
+}
+
+.catalogo-card .precio {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--morado);
+}
+
+.badge {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.badge[data-categoria="electronica"] { background: var(--azul); }
+.badge[data-categoria="ropa"] { background: var(--rosa); }
+.badge[data-categoria="hogar"] { background: var(--verde); }
+
+.catalogo-vacio {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--texto-suave);
+    font-size: 1.1rem;
+    background: var(--fondo-tarjeta);
+    border: 1px dashed var(--borde);
+    border-radius: 16px;
+}
+
+.catalogo-paginacion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.catalogo-paginacion a {
+    text-decoration: none;
+    color: #fff;
+    background: linear-gradient(135deg, var(--morado), var(--azul));
+    padding: 0.55rem 1.3rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.catalogo-paginacion a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px -6px rgba(14, 165, 233, 0.5);
+}
+
+.catalogo-paginacion span {
+    color: var(--texto-suave);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
