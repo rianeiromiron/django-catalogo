@@ -1,0 +1,8 @@
+[lint]
+# N999 (nombre de modulo invalido) se dispara por el guion en el nombre
+# del repo, que GitHub Actions usa como carpeta al clonar - no tiene
+# relacion con el codigo de la app.
+# RUF012 (mutable default en class attribute) se dispara en choices de
+# modelos (ej. CATEGORIA_CHOICES) y en las migraciones autogeneradas -
+# son patrones idiomaticos/generados, no un problema real del codigo.
+ignore = ["N999", "RUF012"]

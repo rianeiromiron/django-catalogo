@@ -1,0 +1,84 @@
+name: lint-and-test
+
+on:
+  push:
+  pull_request:
+
+env:
+  CI_APP_NAME: catalogo
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: app
+
+      - name: Checkout django_mastery
+        uses: actions/checkout@v4
+        with:
+          repository: rianeiromiron/django-mastery
+          path: django_mastery
+
+      - name: Copiar la app dentro de django_mastery
+        run: |
+          rm -rf "django_mastery/${CI_APP_NAME}"
+          cp -r app "django_mastery/${CI_APP_NAME}"
+
+      - name: Crear .env de prueba
+        working-directory: django_mastery
+        run: |
+          cat > .env <<EOF
+          DEBUG=True
+          SECRET_KEY=ci-test-secret-key
+          ALLOWED_HOSTS=localhost,127.0.0.1
+          EMAIL_HOST_USER=ci@example.com
+          EMAIL_HOST_PASSWORD=ci-fake-password
+          STRIPE_PUBLIC_KEY=pk_test_ci
+          STRIPE_SECRET_KEY=sk_test_ci
+          STRIPE_WEBHOOK_SECRET=whsec_ci
+          CI_APP_NAME=${CI_APP_NAME}
+          EOF
+
+      - name: Build and start Django + Redis + Celery
+        working-directory: django_mastery
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --build
+
+      - name: Wait for Django to be ready
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8000/admin/login/ > /dev/null; then
+              echo "Django listo"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Django nunca respondio"
+          exit 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Run Ruff
+        working-directory: app
+        run: |
+          pip install ruff
+          ruff check .
+
+      - name: Run mypy
+        working-directory: django_mastery
+        run: |
+          docker compose exec -T web pip install --no-cache-dir mypy django-stubs
+          docker compose exec -T web mypy "${CI_APP_NAME}"
+
+      - name: Run tests
+        working-directory: django_mastery
+        run: docker compose exec -T web python manage.py test "${CI_APP_NAME}"
+
+      - name: Tear down
+        if: always()
+        working-directory: django_mastery
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v
