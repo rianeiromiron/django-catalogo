@@ -22,6 +22,13 @@ jobs:
           repository: rianeiromiron/django-mastery
           path: django_mastery
 
+      - name: Checkout blog_estatico (layout base compartido)
+        if: env.CI_APP_NAME != 'blog_estatico'
+        uses: actions/checkout@v4
+        with:
+          repository: rianeiromiron/django-blog_estatico
+          path: django_mastery/blog_estatico
+
       - name: Copiar la app dentro de django_mastery
         run: |
           rm -rf "django_mastery/${CI_APP_NAME}"
@@ -47,6 +54,7 @@ jobs:
         run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d --build
 
       - name: Wait for Django to be ready
+        working-directory: django_mastery
         run: |
           for i in $(seq 1 30); do
             if curl -sf http://localhost:8000/admin/login/ > /dev/null; then
@@ -56,6 +64,10 @@ jobs:
             sleep 2
           done
           echo "Django nunca respondio"
+          echo "--- docker compose ps ---"
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml ps -a
+          echo "--- logs web ---"
+          docker compose -f docker-compose.yml -f docker-compose.ci.yml logs web
           exit 1
 
       - uses: actions/setup-python@v5
